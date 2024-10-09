@@ -6,7 +6,7 @@ class Movie < ApplicationRecord
     conn = Faraday.new(url: "https://api.themoviedb.org")
 
     response = conn.get("3/movie/top_rated", {api_key: api_key})
-    
+
     json = JSON.parse(response.body, symbolize_names: true)[:results]
 
     json.first(20)
