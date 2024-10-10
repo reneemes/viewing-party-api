@@ -49,13 +49,23 @@ RSpec.describe "Movies Endpoint" do
     end
 
     it "can search for one movie and return detailed information" do
-      stubbed_response = File.open("spec/fixtures/tmdb_lotr_search_response.json")
+      movie_response = File.open("spec/fixtures/tmdb_movie_response.json")
+      cast_response = File.open("spec/fixtures/tmdb_cast_response.json")
+      reviews_response = File.open("spec/fixtures/tmdb_reviews_response.json")
 
-      stub_request(:get, "https://api.themoviedb.org/3/movie/top_rated")
-        .with(query: { api_key: Rails.application.credentials.tmdb[:key] })
-        .to_return(status: 200, body: stubbed_response, headers: {})
+      stub_request(:get, "https://api.themoviedb.org/3/movie/411")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 200, body: movie_response, headers: {})
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/411/credits")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 200, body: cast_response, headers: {})
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/411/reviews")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 200, body: reviews_response, headers: {})
         
-      get "/api/v1/movies/122"
+      get "/api/v1/movies/411"
 
       expect(response).to be_successful  
       json = JSON.parse(response.body, symbolize_names: true)[:data]
