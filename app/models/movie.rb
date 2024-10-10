@@ -1,15 +1,29 @@
 class Movie < ApplicationRecord
   
-  def self.top_rated_movies
-    api_key = Rails.application.credentials.tmdb[:key]
+  def self.search(params)
+    movies = Movie.all
 
-    conn = Faraday.new(url: "https://api.themoviedb.org")
+    if param[:query]
+      movies = self.search_by_title(movies, param[:query])
+    end
+  end
 
-    response = conn.get("3/movie/top_rated", {api_key: api_key})
+  # def self.top_rated_movies
+  #   api_key = Rails.application.credentials.tmdb[:key]
 
-    json = JSON.parse(response.body, symbolize_names: true)[:results]
+  #   conn = Faraday.new(url: "https://api.themoviedb.org")
 
-    json.first(20)
+  #   response = conn.get("3/movie/top_rated", {api_key: api_key})
+
+  #   json = JSON.parse(response.body, symbolize_names: true)[:results]
+
+  #   json.first(20)
+  # end
+
+  private
+
+  def self.search_by_title(movies, title)
+    movies.where("name iLIKE ?", "%#{title}%")
   end
 
 end

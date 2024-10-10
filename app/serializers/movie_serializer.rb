@@ -15,6 +15,25 @@ class MovieSerializer
     movie[:vote_average]
   end
 
+
+  def self.format_one_movie(movie)
+      {
+          "data":
+              {
+              "id": movie.id,
+              "type": "movie",
+              "attributes": {
+                  "title": movie.name,
+                  "release_year": movie.release_year,
+                  "vote_average": movie.vote_average,
+                  "runtime": movie.runtime,
+                  "genres": [movie.genres],
+                  "summary": movie.summary
+                  # ADD MORE TO THIS LATER
+                  }
+              }
+      }
+    end
   # json.each do |movie|
   #   {
   #     "data": [
