@@ -1,4 +1,5 @@
 class Party < ApplicationRecord
-  has_many :party_users
-  has_many :users, through: :party_users
+  belongs_to :host, class_name: 'User', foreign_key: 'host_id'
+  has_many :user_parties
+  has_many :users, through: :user_parties
 end
