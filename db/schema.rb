@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_11_194652) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_11_210018) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,12 +26,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_11_194652) do
 
   create_table "user_parties", force: :cascade do |t|
     t.bigint "party_id", null: false
-    t.bigint "users_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_host"
     t.index ["party_id"], name: "index_user_parties_on_party_id"
-    t.index ["users_id"], name: "index_user_parties_on_users_id"
+    t.index ["user_id"], name: "index_user_parties_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -45,5 +45,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_11_194652) do
   end
 
   add_foreign_key "user_parties", "parties"
-  add_foreign_key "user_parties", "users", column: "users_id"
+  add_foreign_key "user_parties", "users"
 end
