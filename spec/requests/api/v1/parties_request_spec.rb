@@ -93,5 +93,29 @@ RSpec.describe "Parties Endpoint" do
       expect(json[:message]).to eq('Cannot complete creation')
     end
 
+    it "handles invalid invitee user id" do
+      dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
+      messi = User.create!(name: "Lionel Messi", username: "futbol_geek", password: "test123")
+
+      party_params = {
+        "name": "Dolly's Movie Party!",
+        "start_time": "2025-02-01 10:00:00",
+        "end_time": "2025-02-01 14:30:00",
+        "movie_id": 278,
+        "movie_title": "The Shawshank Redemption",
+        "api_key": dolly.api_key,
+        "invitees": [messi.id, 100]
+      }
+
+      expect(UserParty.all.count).to eq(0)
+
+      post api_v1_parties_path, params: party_params, as: :json
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(response.code).to eq("201")
+      expect(UserParty.all.count).to eq(2)
+    end
+
   end
 end
