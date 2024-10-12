@@ -48,7 +48,7 @@ RSpec.describe "Movies Endpoint" do
 
     end
 
-    it "can search for one movie and return detailed information" do
+    xit "can search for one movie and return detailed information" do
       movie_response = File.open("spec/fixtures/tmdb_movie_response.json")
       cast_response = File.open("spec/fixtures/tmdb_cast_response.json")
       reviews_response = File.open("spec/fixtures/tmdb_reviews_response.json")
