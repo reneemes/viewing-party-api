@@ -90,10 +90,11 @@ RSpec.describe "Parties Endpoint" do
 
       expect(response).to_not be_successful
       expect(response.code).to eq("422")
-      expect(json[:message]).to eq('Cannot complete creation')
+      expect(json[:message]).to eq(:name=>["can't be blank"])
+      # expect(json[:message]).to eq('Cannot complete creation')
     end
 
-    it "handles invalid invitee user id" do
+    it "handles creating a party while excluding invalid invitee user id" do
       dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
       messi = User.create!(name: "Lionel Messi", username: "futbol_geek", password: "test123")
 
@@ -115,6 +116,27 @@ RSpec.describe "Parties Endpoint" do
       expect(response).to be_successful
       expect(response.code).to eq("201")
       expect(UserParty.all.count).to eq(2)
+    end
+
+    it "handles party end time being before start time" do
+      dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
+
+      party_params = {
+        "name": "Movie Time!",
+        "start_time": "2025-02-01 14:30:00",
+        "end_time": "2025-02-01 10:00:00",
+        "movie_id": 278,
+        "movie_title": "The Shawshank Redemption",
+        "api_key":  dolly.api_key,
+        "invitees": [1, 3]
+      }
+
+      post api_v1_parties_path, params: party_params, as: :json
+      json = JSON.parse(response.body, symbolize_names: true)
+      # require 'pry'; binding.pry
+      expect(response).to_not be_successful
+      expect(response.code).to eq("422")
+      expect(json[:message][:base]).to eq(["Party end time cannot be before party start time"])
     end
 
   end
