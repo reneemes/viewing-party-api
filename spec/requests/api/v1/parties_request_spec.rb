@@ -133,7 +133,7 @@ RSpec.describe "Parties Endpoint" do
 
       post api_v1_parties_path, params: party_params, as: :json
       json = JSON.parse(response.body, symbolize_names: true)
-      # require 'pry'; binding.pry
+
       expect(response).to_not be_successful
       expect(response.code).to eq("422")
       expect(json[:message][:base]).to eq(["Party end time cannot be before party start time"])
