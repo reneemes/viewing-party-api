@@ -1,18 +1,19 @@
 class Api::V1::PartiesController < ApplicationController
-  before_action :verify_api_key#, only: :create
+  before_action :verify_api_key
 
   def create
     user = User.find_by(api_key: params[:api_key])
     if user.nil?
       return render json: ErrorSerializer.error('No user found'), status: :not_found
     end
-
+    # require 'pry'; binding.pry
     new_party = Party.create(party_params)
     if new_party.save
       handle_invitees(params[:invitees], new_party, user)
       render json: PartySerializer.new(new_party), status: :created
     else
-      return render json: ErrorSerializer.error('Cannot complete creation'), status: :unprocessable_entity
+      return render json: ErrorSerializer.error(new_party.errors), status: :unprocessable_entity
+      # return render json: ErrorSerializer.error('Cannot complete creation'), status: :unprocessable_entity
     end
   end
 
