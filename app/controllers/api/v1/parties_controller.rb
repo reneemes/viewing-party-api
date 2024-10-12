@@ -2,6 +2,9 @@ class Api::V1::PartiesController < ApplicationController
   before_action :verify_api_key, only: :create
 
   def create
+    # use the api key to validate the user and also find the user
+    # use the invitees to create new instances on the user_parties table
+
     new_party = Party.create(party_params)
     if new_party.save
       render json: PartySerializer.new(new_party), status: :created
