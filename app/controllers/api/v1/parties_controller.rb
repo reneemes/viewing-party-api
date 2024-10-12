@@ -2,20 +2,17 @@ class Api::V1::PartiesController < ApplicationController
   before_action :verify_api_key#, only: :create
 
   def create
-    # use the api key to validate the user and also find the user
-    # use the invitees to create new instances on the user_parties table
     user = User.find_by(api_key: params[:api_key])
     if user.nil?
-      return render json: { error: 'No user found' }, status: :not_found
+      return render json: ErrorSerializer.error('No user found'), status: :not_found
     end
 
     new_party = Party.create(party_params)
-    if new_party#.save
-      render json: PartySerializer.new(new_party), status: :created
+    if new_party.save
       handle_invitees(params[:invitees], new_party, user)
+      render json: PartySerializer.new(new_party), status: :created
     else
-      # do some error handling here
-      return render json: { errors: new_party.errors.full_message }, status: :unprocessable_entity
+      return render json: ErrorSerializer.error('Cannot complete creation'), status: :unprocessable_entity
     end
   end
 
@@ -27,7 +24,7 @@ class Api::V1::PartiesController < ApplicationController
 
   def verify_api_key
     if params[:api_key].blank?
-      return render json: { error: 'Invalid or missing API key' }, status: :unauthorized
+      return render json: ErrorSerializer.error('Invalid or missing API key'), status: :unauthorized
     end
   end
 

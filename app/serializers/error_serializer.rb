@@ -5,4 +5,10 @@ class ErrorSerializer
       status: error_message.status_code
     }
   end
+
+  def self.error(message)
+    {
+      message: message
+    }
+  end
 end
