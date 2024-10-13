@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe "Movies Endpoint" do
   describe "happy path" do
     it "can retrieve a list of top rated movies" do
-
       stubbed_response = File.open("spec/fixtures/tmdb_top_movies_response.json")
       
       stub_request(:get, "https://api.themoviedb.org/3/movie/top_rated")
@@ -26,7 +25,6 @@ RSpec.describe "Movies Endpoint" do
     end
 
     it "can search for movies by title" do
-
       stubbed_response = File.open("spec/fixtures/tmdb_lotr_search_response.json")
 
       stub_request(:get, "https://api.themoviedb.org/3/search/movie")
@@ -48,53 +46,85 @@ RSpec.describe "Movies Endpoint" do
 
     end
 
-#     xit "can search for one movie and return detailed information" do
-#       movie_response = File.open("spec/fixtures/tmdb_movie_response.json")
-#       cast_response = File.open("spec/fixtures/tmdb_cast_response.json")
-#       reviews_response = File.open("spec/fixtures/tmdb_reviews_response.json")
+    it "can search for one movie and return detailed information" do
+      movie_response = File.open("spec/fixtures/tmdb_movie_response.json")
+      cast_response = File.open("spec/fixtures/tmdb_cast_response.json")
+      reviews_response = File.open("spec/fixtures/tmdb_reviews_response.json")
 
-#       stub_request(:get, "https://api.themoviedb.org/3/movie/411")
-#         .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
-#         .to_return(status: 200, body: movie_response, headers: {})
+      stub_request(:get, "https://api.themoviedb.org/3/movie/411")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 200, body: movie_response, headers: {})
 
-#       stub_request(:get, "https://api.themoviedb.org/3/movie/411/credits")
-#         .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
-#         .to_return(status: 200, body: cast_response, headers: {})
+      stub_request(:get, "https://api.themoviedb.org/3/movie/411/credits")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 200, body: cast_response, headers: {})
 
-#       stub_request(:get, "https://api.themoviedb.org/3/movie/411/reviews")
-#         .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
-#         .to_return(status: 200, body: reviews_response, headers: {})
+      stub_request(:get, "https://api.themoviedb.org/3/movie/411/reviews")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 200, body: reviews_response, headers: {})
         
-#       get "/api/v1/movies/411"
+      get "/api/v1/movies/411"
 
-#       expect(response).to be_successful  
-#       json = JSON.parse(response.body, symbolize_names: true)[:data]
+      expect(response).to be_successful  
+      json = JSON.parse(response.body, symbolize_names: true)[:data]
 
-#     end
-#   end
+      expect(response).to be_successful
+      expect(response.status).to be(200)
+    end
+  end
 
-#   describe "Sad Path" do
-#     xit "handles not being able to process tmdb requests" do
-#       stub_request(:get, "https://api.themoviedb.org/3/movie/top_rated")
-#         .with(query: { api_key: Rails.application.credentials.tmdb[:key] })
-#         .to_return(status: 500, body: {error: "Cannot connect to The Movie Database."}.to_json)
+  describe "Sad Path" do
+    it "handles not being able to process top 20 movies requests" do
+      stub_request(:get, "https://api.themoviedb.org/3/movie/top_rated")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key] })
+        .to_return(status: 503, body: {error: "Cannot connect to The Movie Database."}.to_json)
 
-#       get "/api/v1/movies"
+      get "/api/v1/movies"
+      json = JSON.parse(response.body, symbolize_names: true)
 
-#       expect(response).to_not be_successful
-#       expect(response).to have_http_status(500)
-#     end
+      expect(response).to_not be_successful
+      expect(response).to have_http_status(503)
+      expect(json[:message]).to eq("Unable to fetch movies")
+    end
 
-#     xit "handles not being able to process a tmdb search" do
-#       var = stub_request(:get, "https://api.themoviedb.org/3/search/movie")
-#         .with(query: { api_key: Rails.application.credentials.tmdb[:key], query: "lord of the rings" })
-#         .to_return(status: 500, body: {error: "Cannot connect to The Movie Database."}.to_json)
+    it "handles not being able to process a tmdb search" do
+      stub_request(:get, "https://api.themoviedb.org/3/search/movie")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key], query: "lord of the rings" })
+        .to_return(status: 404, body: {error: "Cannot connect to The Movie Database."}.to_json)
+
+      get "/api/v1/search/movies?query=lord%20of%20the%20rings"
 
 
-#       get "/api/v1/search/movies?query=lord%20of%20the%20rings"
-# # require 'pry'; binding.pry
-#       expect(response).to_not be_successful
-#       expect(response).to have_http_status(500)
-#     end
+      expect(response).to_not be_successful
+      expect(response).to have_http_status(404)
+    end
+
+    it "handles no movie by searched ID number" do
+      failed_response = {
+        "success": false,
+        "status_code": 34,
+        "status_message": "The resource you requested could not be found."
+      }
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/999999999")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 404, body: failed_response.to_json)
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/999999999/credits")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 404, body: failed_response.to_json)
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/999999999/reviews")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 404, body: failed_response.to_json)
+
+      get "/api/v1/movies/999999999"
+
+      expect(response).to_not be_successful  
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response.status).to be(404)
+      expect(json[:message]).to eq("Unable to locate movie with ID 999999999")
+    end
   end
 end
