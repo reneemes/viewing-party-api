@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe "Parties Endpoint" do
   describe "happy path" do
     it "can create a new viewing party event" do
-      # WebMock.disable!
       danny = User.create!(name: "Danny DeVito", username: "danny_de_v", password: "jerseyMikesRox7")
       dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
       messi = User.create!(name: "Lionel Messi", username: "futbol_geek", password: "test123")
@@ -82,6 +81,7 @@ RSpec.describe "Parties Endpoint" do
     end
 
     it "handles a party not successfully created" do
+      WebMock.disable!
       dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
 
       party_params = {

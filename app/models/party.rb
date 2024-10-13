@@ -20,17 +20,6 @@ class Party < ApplicationRecord
 
     total_minutes = (hours * 60) + minutes
   end
-  # def check_runtime(runtime)
-  #   party_start = hours_to_minutes(self.start_time)
-  #   party_end = hours_to_minutes(self.end_time)
-    
-  #   party_duration = party_end - party_start
-    
-  #   if party_duration < runtime
-  #     errors.add :base, message: "Party duration (#{party_duration} minutes) is shorter than movie runtime (#{runtime} minutes)"
-  #     throw(:abort)
-  #   end
-  # end
 
   private
 
@@ -41,8 +30,7 @@ class Party < ApplicationRecord
     end
   end
 
-  def check_runtime#(runtime)
-    # return if movie_runtime.nil?
+  def check_runtime
 
     party_start = hours_to_minutes(self.start_time)
     party_end = hours_to_minutes(self.end_time)
@@ -54,11 +42,4 @@ class Party < ApplicationRecord
       throw(:abort)
     end
   end
-  # def hours_to_minutes(time)
-  #   time = time.strftime("%H:%M")
-  #   hours = time[0, 2].to_i
-  #   minutes = time[3, 2].to_i
-
-  #   total_minutes = (hours * 60) + minutes
-  # end
 end
