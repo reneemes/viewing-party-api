@@ -167,7 +167,7 @@ RSpec.describe "Parties Endpoint" do
 
       expect(response).to_not be_successful
       expect(response.code).to eq("422")
-      expect(json[:message][:base]).to eq(["Party end time cannot be before party start time"])
+      expect(json[:message][:base]).to eq(["Party duration (1 minutes) is shorter than movie runtime (142 minutes)"])
     end
 
   end
