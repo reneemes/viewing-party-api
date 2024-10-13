@@ -14,7 +14,7 @@ class Api::V1::MoviesController < ApplicationController
       movie_info = TmdbGateway.get_movie_by_id(id)
       render json: MovieSerializer.format_one_movie(movie_info[:movie], movie_info[:cast], movie_info[:reviews])
     rescue => error
-      render json: ErrorSerializer.error(error.message), status: :service_unavailable
+      render json: ErrorSerializer.error(error.message), status: :not_found
     end
   end
 end

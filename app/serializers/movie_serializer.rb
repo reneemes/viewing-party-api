@@ -1,8 +1,6 @@
 class MovieSerializer
   include JSONAPI::Serializer
-  # attributes :title, :vote_average
   set_type :movie
-
   set_id { |movie| movie[:id].to_s }
 
   attributes :title do |movie|
@@ -15,7 +13,6 @@ class MovieSerializer
 
 
   def self.format_one_movie(movie, cast, review)
-    # require 'pry'; binding.pry
     generes = movie[:genres].map do |genre|
       genre[:name]
     end
@@ -64,22 +61,3 @@ class MovieSerializer
   end
 
 end
-
-# set_id method
-# def self.format_poster(poster)
-#   {
-#       "data":
-#           {
-#           "id": poster.id,
-#           "type": "poster",
-#           "attributes": {
-#               "name": poster.name,
-#               "description": poster.description,
-#               "price": poster.price,
-#               "year": poster.year,
-#               "vintage": poster.vintage,
-#               "img_url": poster.img_url
-#               }
-#           }
-#   }
-# end

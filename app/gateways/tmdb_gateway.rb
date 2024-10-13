@@ -22,15 +22,16 @@ class TmdbGateway
     api_key = Rails.application.credentials.tmdb[:key]
     conn = Faraday.new(url: "https://api.themoviedb.org")
 
-
     movie_response = conn.get("3/movie/#{id}", {api_key: api_key})
+    # require 'pry'; binding.pry
+    if movie_response.status != 200
+      raise "Unable to locate movie with ID #{id}"
+    end
     movie = JSON.parse(movie_response.body, symbolize_names: true)
-
 
     cast_response = conn.get("3/movie/#{id}/credits", {api_key: api_key})
     cast = JSON.parse(cast_response.body, symbolize_names: true)[:cast].first(10)
     cast_data = MovieSerializer.ten_actors(cast)
-
 
     reviews_response = conn.get("3/movie/#{id}/reviews", {api_key: api_key})
     reviews = JSON.parse(reviews_response.body, symbolize_names: true)[:results].first(5)

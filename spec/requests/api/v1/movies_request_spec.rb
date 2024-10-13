@@ -68,6 +68,8 @@ RSpec.describe "Movies Endpoint" do
       expect(response).to be_successful  
       json = JSON.parse(response.body, symbolize_names: true)[:data]
 
+      expect(response).to be_successful
+      expect(response.status).to be(200)
     end
   end
 
@@ -98,7 +100,31 @@ RSpec.describe "Movies Endpoint" do
     end
 
     it "handles no movie by searched ID number" do
+      failed_response = {
+        "success": false,
+        "status_code": 34,
+        "status_message": "The resource you requested could not be found."
+      }
 
+      stub_request(:get, "https://api.themoviedb.org/3/movie/999999999")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 404, body: failed_response.to_json)
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/999999999/credits")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 404, body: failed_response.to_json)
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/999999999/reviews")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key]})
+        .to_return(status: 404, body: failed_response.to_json)
+
+      get "/api/v1/movies/999999999"
+
+      expect(response).to_not be_successful  
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response.status).to be(404)
+      expect(json[:message]).to eq("Unable to locate movie with ID 999999999")
     end
   end
 end
