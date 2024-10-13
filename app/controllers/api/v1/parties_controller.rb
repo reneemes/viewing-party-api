@@ -6,14 +6,15 @@ class Api::V1::PartiesController < ApplicationController
     if user.nil?
       return render json: ErrorSerializer.error('No user found'), status: :not_found
     end
-    # require 'pry'; binding.pry
-    new_party = Party.create(party_params)
+    
+    movie_time = TmdbGateway.get_movie(params[:movie_id])[:runtime]
+
+    new_party = Party.create(party_params.merge(movie_runtime: movie_time))
     if new_party.save
       handle_invitees(params[:invitees], new_party, user)
       render json: PartySerializer.new(new_party), status: :created
     else
       return render json: ErrorSerializer.error(new_party.errors), status: :unprocessable_entity
-      # return render json: ErrorSerializer.error('Cannot complete creation'), status: :unprocessable_entity
     end
   end
 
@@ -35,5 +36,4 @@ class Api::V1::PartiesController < ApplicationController
       UserParty.create(user_id: user_id, party_id: party.id, is_host: false)
     end
   end
-
 end
