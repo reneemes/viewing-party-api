@@ -81,7 +81,7 @@ RSpec.describe "Parties Endpoint" do
     end
 
     it "handles a party not successfully created" do
-      WebMock.disable!
+      # WebMock.disable!
       dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
 
       party_params = {
@@ -148,7 +148,7 @@ RSpec.describe "Parties Endpoint" do
     end
 
     it "handles the movie being longer than the party duration" do
-      WebMock.disable!
+      # WebMock.disable!
       dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
       messi = User.create!(name: "Lionel Messi", username: "futbol_geek", password: "test123")
 
