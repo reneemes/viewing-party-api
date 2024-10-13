@@ -11,7 +11,7 @@ class TmdbGateway
     end
 
     if response.status != 200
-      raise "Unable to fetch movies from the external API."
+      raise "Unable to fetch movies"
     end
 
     json = JSON.parse(response.body, symbolize_names: true)[:results]
@@ -23,7 +23,6 @@ class TmdbGateway
     conn = Faraday.new(url: "https://api.themoviedb.org")
 
     movie_response = conn.get("3/movie/#{id}", {api_key: api_key})
-    # require 'pry'; binding.pry
     if movie_response.status != 200
       raise "Unable to locate movie with ID #{id}"
     end

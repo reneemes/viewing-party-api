@@ -84,7 +84,7 @@ RSpec.describe "Movies Endpoint" do
 
       expect(response).to_not be_successful
       expect(response).to have_http_status(503)
-      expect(json[:message]).to eq("Unable to fetch movies from the external API.")
+      expect(json[:message]).to eq("Unable to fetch movies")
     end
 
     it "handles not being able to process a tmdb search" do
