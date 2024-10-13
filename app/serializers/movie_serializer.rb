@@ -14,45 +14,55 @@ class MovieSerializer
   end
 
 
-#   def self.format_one_movie(movie, cast, review)
-#       {
-#           "data":
-#               {
-#               "id": movie[:id],
-#               "type": "movie",
-#               "attributes": {
-#                   "title": movie[:original_title],
-#                   "release_year": movie[:release_date][0..3],
-#                   "vote_average": movie[:vote_average],
-#                   "runtime": movie[:runtime],
-#                   "genres": [movie[:genres][:name]],
-#                   "summary": movie[:overview],
-#                   "cast": [
-#                     cast
-#                   ],
-#                   # "total_reviews": movie[:],
-#                   # "reviews": [
-#                   #   reviews
-#                   # ]
-#                   # ADD MORE TO THIS
-#                   }
-#               }
-#       }
-#     end
+  def self.format_one_movie(movie, cast, review)
+    # require 'pry'; binding.pry
+    generes = movie[:genres].map do |genre|
+      genre[:name]
+    end
+    {
+      "data":
+        {
+        "id": movie[:id].to_s,
+        "type": "movie",
+        "attributes": {
+          "title": movie[:original_title],
+          "release_year": movie[:release_date][0..3],
+          "vote_average": movie[:vote_average],
+          "runtime": format_runtime(movie[:runtime]),
+          "genres": generes,
+          "summary": movie[:overview],
+          "cast": cast,
+          "total_reviews": review.count,
+          "reviews": review
+          }
+        }
+      }
+  end
 
-#     def self.ten_actors(actor)
-#       {
-#         "character": actor[:character],
-#         "actor": actor[:name]
-#       }
-#     end
+  def self.ten_actors(cast)
+    cast.map do |actor|
+      {
+        "character": actor[:character],
+        "actor": actor[:name]
+      }
+    end
+  end
 
-#     def self.five_reviews(review)
-#       {
-#         "author": review[:author],
-#         "review": review[:content]
-#       }
-#     end
+  def self.five_reviews(reviews)
+    reviews.map do |review|
+      {
+        "author": review[:author],
+        "review": review[:content]
+      }
+    end
+  end
+
+  def self.format_runtime(runtime)
+    hours = runtime / 60
+    minutes = runtime % 60
+    return "#{hours} hours, #{minutes} minutes"
+  end
+
 end
 
 # set_id method
