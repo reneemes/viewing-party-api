@@ -18,7 +18,6 @@ class Api::V1::PartiesController < ApplicationController
       render json: PartySerializer.new(new_party), status: :created
     else
       return render json: ErrorSerializer.error(new_party.errors), status: :unprocessable_entity
-      # return render json: ErrorSerializer.error('Cannot complete creation'), status: :unprocessable_entity
     end
   end
 
