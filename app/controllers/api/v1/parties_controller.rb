@@ -8,12 +8,8 @@ class Api::V1::PartiesController < ApplicationController
     end
     
     movie_time = TmdbGateway.get_movie(params[:movie_id])[:runtime]
-  #  require 'pry'; binding.pry
-    new_party = Party.create(party_params.merge(movie_runtime: movie_time))
-    # new_party = Party.create(party_params)
 
-    # new_party.check_runtime(movie_time)
-    
+    new_party = Party.create(party_params.merge(movie_runtime: movie_time))
     if new_party.save
       handle_invitees(params[:invitees], new_party, user)
       render json: PartySerializer.new(new_party), status: :created
@@ -40,11 +36,4 @@ class Api::V1::PartiesController < ApplicationController
       UserParty.create(user_id: user_id, party_id: party.id, is_host: false)
     end
   end
-
-  # def valid_party_duration(runtime)
-  #   require 'pry'; binding.pry
-    
-  #   (params[:end_time].delete("- :").to_i - params[:start_time].delete("- :").to_i) < runtime
-  # end
-
 end

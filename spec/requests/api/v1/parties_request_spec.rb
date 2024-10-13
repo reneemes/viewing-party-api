@@ -81,7 +81,12 @@ RSpec.describe "Parties Endpoint" do
     end
 
     it "handles a party not successfully created" do
-      # WebMock.disable!
+      stubbed_response = File.open("spec/fixtures/tmdb_movie_id_response.json")
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/278")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key] })
+        .to_return(status: 200, body: stubbed_response, headers: {})
+
       dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
 
       party_params = {
@@ -103,6 +108,12 @@ RSpec.describe "Parties Endpoint" do
     end
 
     it "handles creating a party while excluding invalid invitee user id" do
+      stubbed_response = File.open("spec/fixtures/tmdb_movie_id_response.json")
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/278")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key] })
+        .to_return(status: 200, body: stubbed_response, headers: {})
+
       dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
       messi = User.create!(name: "Lionel Messi", username: "futbol_geek", password: "test123")
 
@@ -127,6 +138,12 @@ RSpec.describe "Parties Endpoint" do
     end
 
     it "handles party end time being before start time" do
+      stubbed_response = File.open("spec/fixtures/tmdb_movie_id_response.json")
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/278")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key] })
+        .to_return(status: 200, body: stubbed_response, headers: {})
+
       dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
 
       party_params = {
@@ -148,7 +165,12 @@ RSpec.describe "Parties Endpoint" do
     end
 
     it "handles the movie being longer than the party duration" do
-      # WebMock.disable!
+      stubbed_response = File.open("spec/fixtures/tmdb_movie_id_response.json")
+
+      stub_request(:get, "https://api.themoviedb.org/3/movie/278")
+        .with(query: { api_key: Rails.application.credentials.tmdb[:key] })
+        .to_return(status: 200, body: stubbed_response, headers: {})
+
       dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
       messi = User.create!(name: "Lionel Messi", username: "futbol_geek", password: "test123")
 
