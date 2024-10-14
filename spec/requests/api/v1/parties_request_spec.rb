@@ -40,6 +40,37 @@ RSpec.describe "Parties Endpoint" do
       expect(host.is_host).to be(true)
       expect(invitee.is_host).to be(false)
     end
+
+    it "can update the party to add a new invitee" do
+      WebMock.disable!
+      danny = User.create!(name: "Danny DeVito", username: "danny_de_v", password: "jerseyMikesRox7")
+      dolly = User.create!(name: "Dolly Parton", username: "dollyP", password: "Jolene123")
+      messi = User.create!(name: "Lionel Messi", username: "futbol_geek", password: "test123")
+      party_params = {
+        "name": "Movie Time!",
+        "start_time": "2025-02-01 10:00:00",
+        "end_time": "2025-02-01 14:30:00",
+        "movie_id": 278,
+        "movie_title": "The Shawshank Redemption",
+        "api_key":  dolly.api_key,
+        "invitees": [danny.id]
+      }
+
+      post api_v1_parties_path, params: party_params, as: :json
+      party_id = JSON.parse(response.body, symbolize_names: true)[:data][:id].to_i
+
+      update_params = {
+        "api_key": dolly.api_key,
+        "invitees": [messi.id]
+      }
+
+      patch "/api/v1/parties/#{party_id}", params: update_params, as: :json
+      json = JSON.parse(response.body, symbolize_names: true)
+      # require 'pry'; binding.pry
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      expect(json[:data][:relationships][:users][:data].count).to eq(3)
+    end
   end
 
   describe "sad path" do
@@ -58,8 +89,8 @@ RSpec.describe "Parties Endpoint" do
       json = JSON.parse(response.body, symbolize_names: true)
       
       expect(response).to_not be_successful
-      expect(response.code).to eq("404")
-      expect(json[:message]).to eq("No user found")
+      expect(response.code).to eq("401")
+      expect(json[:message]).to eq("User not found: Invalid or missing API key")
     end
 
     it "handles a missing api key" do
@@ -77,7 +108,7 @@ RSpec.describe "Parties Endpoint" do
       
       expect(response).to_not be_successful
       expect(response.code).to eq("401")
-      expect(json[:message]).to eq("Invalid or missing API key")
+      expect(json[:message]).to eq("User not found: Invalid or missing API key")
     end
 
     it "handles a party not successfully created" do
