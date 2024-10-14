@@ -104,7 +104,6 @@ RSpec.describe "Parties Endpoint" do
       expect(response).to_not be_successful
       expect(response.code).to eq("422")
       expect(json[:message]).to eq(:name=>["can't be blank"])
-      # expect(json[:message]).to eq('Cannot complete creation')
     end
 
     it "handles creating a party while excluding invalid invitee user id" do
@@ -224,7 +223,7 @@ RSpec.describe "Parties Endpoint" do
 
       patch "/api/v1/parties/#{party_id}", params: update_params, as: :json
       json = JSON.parse(response.body, symbolize_names: true)
-      # require 'pry'; binding.pry
+
       expect(response).to be_successful
       expect(response.status).to eq(200)
       expect(json[:data][:relationships][:users][:data].count).to eq(3)

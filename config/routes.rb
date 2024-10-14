@@ -12,9 +12,7 @@ Rails.application.routes.draw do
       resources :users, only: [:create, :index]
       resources :sessions, only: :create
       resources :movies, only: [:index, :show]
-      # resources :parties, only: :create
       resources :parties, only: [:create, :update]
     end
   end
-  # patch "/api/v1/parties/:id", to: "api/v1/parties#update"
 end
