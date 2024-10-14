@@ -3,26 +3,26 @@ class Api::V1::PartiesController < ApplicationController
 
   def create
     user = User.find_by(api_key: params[:api_key])
-    # if user.nil?
-    #   return render json: ErrorSerializer.error('No user found'), status: :not_found
-    # end
-    
+
     movie_time = TmdbGateway.get_movie(params[:movie_id])[:runtime]
 
     new_party = Party.create(party_params.merge(movie_runtime: movie_time))
     if new_party.save
       handle_invitees(params[:invitees], new_party, user)
-      render json: PartySerializer.new(new_party), status: :created
+      return render json: PartySerializer.new(new_party), status: :created
     else
       return render json: ErrorSerializer.error(new_party.errors), status: :unprocessable_entity
     end
   end
 
   def update
-    # require 'pry'; binding.pry
     party = Party.find_by(id: params[:id])
-    handle_additional_invitees(params[:invitees], party)
-    render json: PartySerializer.new(party)
+    if party.nil?
+      render json: ErrorSerializer.error('Party not found: Invalid or missing party ID'), status: :not_found
+    else
+      handle_additional_invitees(update_params[:invitees], party)
+      render json: PartySerializer.new(party)
+    end
   end
 
   private
@@ -31,9 +31,9 @@ class Api::V1::PartiesController < ApplicationController
     params.require(:party).permit(:name, :start_time, :end_time, :movie_id, :movie_title, :api_key, :invitees)
   end
 
-  # def update_params
-  #   params.require(:party, :api_key).permit(:invitee)
-  # end
+  def update_params
+    params.permit(invitees: [])
+  end
 
   def verify_api_key
     user = User.find_by(api_key: params[:api_key])
@@ -51,7 +51,10 @@ class Api::V1::PartiesController < ApplicationController
 
   def handle_additional_invitees(invitees, party)
     invitees.each do |user_id|
-      UserParty.create(user_id: user_id, party_id: party.id, is_host: false)
+      if !User.find_by(id: user_id).nil?
+        UserParty.create(user_id: user_id, party_id: party.id, is_host: false)
+      end
     end
   end
+  
 end
