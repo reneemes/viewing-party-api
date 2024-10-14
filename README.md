@@ -15,3 +15,16 @@ Viewing Party is an application that allows users to explore movies and create a
 Spend some time familiarizing yourself with the functionality and structure of the application so far.
 
 Run the application and test out some endpoints: `rails s`
+
+## Endpoints
+
+* Endpoints 1-3 do not require an API key to retrieve:</br>
+  * Top 20 movies
+  * Movies that meet the search keywords
+  * A detailed list of information for one specific movie
+* Endpoint 4-5 require an API key be present and valid for:</br>
+  * Creating a new viewing party
+  * Adding additional invitees after party creation
+
+## Deployment
+https://stormy-beach-63044-805e1c9fd02b.herokuapp.com/

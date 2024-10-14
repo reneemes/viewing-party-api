@@ -13,6 +13,5 @@ RSpec.describe User, type: :model do
   describe "relationships" do
     it { should have_many :user_parties }
     it { should have_many(:parties).through(:user_parties) }
-    # it { should have_many(:invited_parties).with_foreign_key('user_id') }
   end
 end
