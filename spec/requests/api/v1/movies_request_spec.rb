@@ -21,7 +21,6 @@ RSpec.describe "Movies Endpoint" do
         expect(movie[:attributes]).to have_key(:title)
         expect(movie[:attributes]).to have_key(:vote_average)
       end
-
     end
 
     it "can search for movies by title" do
@@ -43,7 +42,6 @@ RSpec.describe "Movies Endpoint" do
         expect(movie[:attributes]).to have_key(:title)
         expect(movie[:attributes]).to have_key(:vote_average)
       end
-
     end
 
     it "can search for one movie and return detailed information" do
