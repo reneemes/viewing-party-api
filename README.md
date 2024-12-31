@@ -2,7 +2,7 @@
 
 ## About this Application
 
-Viewing Party is an application that allows users to explore movies and create a Viewing Party Event that invites users and keeps track of a host. Once completed, this application will collect relevant information about movies from an external API, provide CRUD functionality for creating a Viewing Party and restrict its use to only verified users. 
+Viewing Party is an application that allows users to explore movies and create a Viewing Party Event that invites users and keeps track of a host. This application collects relevant information about movies from an external API, provide CRUD functionality for creating a Viewing Party and restrict its use to only verified users. 
 
 ## Setup
 
@@ -110,6 +110,34 @@ Response:
   ]
 }
 ```
+### Search for Movie by Title
+Request: `GET api/v1/movies?query=Lord of the Rings`
+
+Response:
+```
+{
+  "data": [
+    {
+      "id": "839033",
+      "type": "movie",
+      "attributes": {
+        "title": "The Lord of the Rings: The War of the Rohirrim",
+        "vote_average": 6.831
+      }
+    },
+    {
+      "id": "120",
+      "type": "movie",
+      "attributes": {
+        "title": "The Lord of the Rings: The Fellowship of the Ring",
+        "vote_average": 8.4
+      }
+    },
+    First 20 Results...
+  ]
+}
+```
+
 ### Get One Movie
 Request: `GET api/v1/movies/:movie_id`
 
@@ -117,33 +145,33 @@ Response:
 ```
 {
   "data": {
-    "id": "411",
+    "id": "120",
     "type": "movie",
     "attributes": {
-      "title": "The Chronicles of Narnia: The Lion, the Witch and the Wardrobe",
-      "release_year": "2005",
-      "vote_average": 7.134,
-      "runtime": "2 hours, 23 minutes",
+      "title": "The Lord of the Rings: The Fellowship of the Ring",
+      "release_year": "2001",
+      "vote_average": 8.416,
+      "runtime": "2 hours, 59 minutes",
       "genres": [
         "Adventure",
-        "Family",
-        "Fantasy"
+        "Fantasy",
+        "Action"
       ],
-      "summary": "Siblings Lucy, Edmund, Susan and Peter step through a magical wardrobe and find the land of Narnia...",
+      "summary": "Young hobbit Frodo Baggins, after inheriting a mysterious ring from his uncle Bilbo, must leave his home in order to keep it from falling into the hands of its evil creator. Along the way, a fellowship is formed to protect the ringbearer and make sure that the ring arrives at its final destination: Mt. Doom, the only place where it can be destroyed.",
       "cast": [
         {
-          "character": "Peter Pevensie",
-          "actor": "William Moseley"
+          "character": "Frodo",
+          "actor": "Elijah Wood"
         },
-        First 10 Cast Members...
+          First 10 Cast Members...
       ],
-      "total_reviews": 8,
+      "total_reviews": 5,
       "reviews": [
         {
-          "author": "r96sk",
-          "review": "Long bloody title, but a great film no doubt..."
+          "author": "gdeveloper",
+          "review": "An epic movie if I ever saw one. Captivating and just plain fun to watch. This movie is, indeed, art."
         },
-        First 5 Reviews...
+          Top 5 Reviews...
       ]
     }
   }
